@@ -1,0 +1,21 @@
+name: Container Security Gate
+
+on: [push]
+
+jobs:
+  container-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build container image
+      run: docker build -t secure-image .
+
+    - name: Scan container image
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: secure-image
+        format: table
+        exit-code: '1'
+        severity: CRITICAL,HIGH
